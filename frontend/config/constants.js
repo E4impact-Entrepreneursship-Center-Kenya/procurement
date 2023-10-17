@@ -50,6 +50,12 @@ export const URLS = {
     FORM_USERS: `/accounting/form-users`,
     AMOUNT_RECEIVED: `/accounting/amount-received`,
     CASH_ADVANCE_FORMS: `/accounting/cash-advance-forms`,
+    EXPENSE_CLAIM_FORMS: `/accounting/expense-claim-forms`,
+    PURCHASE_REQUISITION_FORMS: `/accounting/purchase-requisition-forms`,
+    REQUEST_FOR_QUOTATION_FORMS: `/accounting/request-for-quotation-forms`,
+    LOCAL_PURCHASE_ORDER_FORMS: `/accounting/local-purchase-order-forms`,
+    OVER_EXPENDITURE_FORMS: `/accounting/over-expenditure-forms`,
+    UNDER_EXPENDITURE_FORMS: `/accounting/under-expenditure-forms`,
 
     // Notifications
     NOTIFICATIONS: `/accounting/notifications`

@@ -44,7 +44,7 @@ const PurchaseRequisitionFields = ({ form, projects }: IProps) => {
                     <Select {...form.getInputProps('project')} label="Project" placeholder='Project' data={projects?.map((project: any) => ({ label: project.name, value: project?.id?.toString() }))} />
                 </Grid.Col>
                 <Grid.Col md={6}>
-                    <TextInput {...form.getInputProps('deliver_to')} label="Deliver To" placeholder='Deliver To' />
+                    <TextInput {...form.getInputProps('delivered_to')} label="Delivered To" placeholder='Delivered To' />
                 </Grid.Col>
             </Grid>
         </div>

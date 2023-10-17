@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import HeaderAndFooterWrapper from '../../../../layouts/HeaderAndFooterWrapper'
 import requireAuthMiddleware from '../../../../middleware/requireAuthMiddleware'
 import { formatCurrency, makeRequestOne, toDate } from '../../../../config/config'
@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { IconArrowLeft } from '@tabler/icons'
 import { getColor, getTooltip } from '../../../../config/functions'
 import customRedirect from '../../../../middleware/redirectIfNoAuth'
+import { useAppContext } from '../../../../providers/appProvider'
 
 
 const CustomRingProgress = ({ level }: { level: number }) => {
@@ -88,7 +89,7 @@ const CashAdvanceFormTable = ({ records }: { records: any }) => {
           width: 80,
           render: (entry: any) => (
             <>
-              <Text weight={600} size="sm" style={{textTransform: "uppercase"}}>{`${entry?.currency} ${formatCurrency(entry?.total)}`}</Text>
+              <Text weight={600} size="sm" style={{ textTransform: "uppercase" }}>{`${entry?.currency} ${formatCurrency(entry?.total)}`}</Text>
             </>
           )
         },
@@ -119,6 +120,14 @@ interface IMyForms {
 const MyForms = (props: IMyForms) => {
   const { my_cash_advance_forms, cash_advance_forms_to_check, userId, cash_advance_forms_to_approve } = props
 
+  const [user_, setUser] = useState()
+  const { user } = useAppContext()
+  useEffect(() => {
+    const u = JSON.parse(user ?? "null")
+    console.log("User", u)
+    setUser(u)
+  }, [])
+
   return (
     <div>
       <Container size="lg" py={50}>
@@ -134,15 +143,24 @@ const MyForms = (props: IMyForms) => {
           <CashAdvanceFormTable records={my_cash_advance_forms} />
         </Stack>
 
-        <Stack>
-          <Title>Cash Advance Forms to Check</Title>
-          <CashAdvanceFormTable records={cash_advance_forms_to_check} />
-        </Stack>
+        {
+          user ? user?.profile?.checker ? (
+            <Stack>
+              <Title>Cash Advance Forms to Check</Title>
+              <CashAdvanceFormTable records={cash_advance_forms_to_check} />
+            </Stack>
+          ) : null : null
+        }
 
-        <Stack>
-          <Title>Cash Advance Forms to Approve</Title>
-          <CashAdvanceFormTable records={cash_advance_forms_to_approve} />
-        </Stack>
+        {
+          user ? user?.profile?.approver ? (
+            <Stack>
+              <Title>Cash Advance Forms to Approve</Title>
+              <CashAdvanceFormTable records={cash_advance_forms_to_approve} />
+            </Stack>
+          ) : null : null
+        }
+
 
       </Container>
     </div>

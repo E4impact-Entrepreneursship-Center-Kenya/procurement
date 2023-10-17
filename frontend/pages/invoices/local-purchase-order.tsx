@@ -1,22 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import HeaderAndFooterWrapper from '../../layouts/HeaderAndFooterWrapper'
-import { formatCurrency, getTheme, makeRequestOne } from '../../config/config'
-import { APP_NAME, FOUNDATION_LOGO, INVOICE_LEVELS, LOCAL_STORAGE_KEYS, SEPARATOR, URLS, WEBSITE_LOGO } from '../../config/constants'
+import { convertJSONToFormData, formatCurrency, formatDateToYYYYMMDD, getTheme, makeRequestOne } from '../../config/config'
+import { APP_NAME, EMOJIS, FOUNDATION_LOGO, INVOICE_LEVELS, LOCAL_STORAGE_KEYS, SEPARATOR, URLS, WEBSITE_LOGO } from '../../config/constants'
 import customRedirect from '../../middleware/redirectIfNoAuth'
 import requireAuthMiddleware from '../../middleware/requireAuthMiddleware'
-import { Container, Paper, Stack, Group, Title, Box, Select, ActionIcon, Button, NumberInput, TextInput, Overlay, Radio, Grid, Text, Image } from '@mantine/core'
+import { Container, Paper, Stack, Group, Title, Box, ActionIcon, Button, NumberInput, TextInput, Grid, Text, Image, LoadingOverlay } from '@mantine/core'
 import ApprovalPerson from '../../components/invoice/Approvals'
 import ApprovalsSection from '../../components/invoice/ApprovalsSection'
 import InvoiceFooter from '../../components/invoice/InvoiceFooter'
 import InvoiceHeader from '../../components/invoice/InvoiceHeader'
-import InvoiceTitle from '../../components/invoice/InvoiceTitle'
 import projects from '../admin/projects'
 import Head from 'next/head'
 import { useForm } from '@mantine/form'
-import FormTitle from '../../components/invoice/FormTitle'
-import { IconTrash, IconPlus } from '@tabler/icons'
+import { IconTrash, IconPlus, IconExclamationMark, IconInfoCircle } from '@tabler/icons'
 import { DataTable } from 'mantine-datatable'
 import LocalPurchaseOrderFields from '../../components/invoice/initial_fields/LocalPurchaseOrderFields'
+import { showNotification } from '@mantine/notifications'
+import { displayErrors } from '../../config/functions'
+import { useAppContext } from '../../providers/appProvider'
 
 const SINGLE_ITEM = {
     no: '',
@@ -97,7 +98,7 @@ const LocalPurchaseOrderDatatable = ({ form }: { form: any }) => {
                         }
                     },
                     {
-                        title: 'Total Cost (KSH)',
+                        title: `Total Cost (${form.values?.currency?.toUpperCase()})`,
                         accessor: 'amount',
                         width: "100px",
                         render: (entry: any, i: any) => {
@@ -161,10 +162,13 @@ interface IProps {
 
 const LocalPurchaseOrder = ({ projects, checkers, user }: IProps) => {
 
+    const [loading, setLoading] = useState(false)
+    const {user_id, token} = useAppContext()
+
     const form = useForm({
         initialValues: {
-            country: "",
-            currency: "",
+            country: "Kenya",
+            currency: "kes",
             invoice_number: "",
             bank_batch_no: "",
             project: "",
@@ -194,17 +198,72 @@ const LocalPurchaseOrder = ({ projects, checkers, user }: IProps) => {
         return form.values?.items?.reduce((old: number, item: any, i: number) => (item?.amount !== "" || item?.amount !== null) ? old + item?.amount : old, 0)
     }
 
+    function submitForm() {
+        let data: any = structuredClone(form.values)
+        data.requested_by.user = user_id
+
+        let items: any = data.items.filter((ln: any) => ln?.description !== "")
+        if (items.length === 0) {
+            showNotification({
+                title: "No items",
+                message: "You don't have any items in your form",
+                color: "red",
+                icon: <IconExclamationMark />
+            })
+            return
+        }
+        setLoading(true)
+        data.total = getAmountTotal(data.items)
+        data.items = JSON.stringify(items) 
+
+        data.date = formatDateToYYYYMMDD(data?.date)
+        data.delivery_date = formatDateToYYYYMMDD(data?.delivery_date)
+
+        let requested_by_date = formatDateToYYYYMMDD(data.requested_by.date)
+        data.requested_by.date = requested_by_date
+
+        const formData = convertJSONToFormData(data)
+        makeRequestOne({
+            url: URLS.PURCHASE_REQUISITION_FORMS,
+            method: "POST",
+            data: formData,
+            extra_headers: {
+                authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            }
+        }).then((res: any) => {
+            showNotification({
+                title: `Submission successful ${EMOJIS.partypopper}`,
+                message: "Congratulations! Your form has been submitted successfully",
+                color: "green",
+                icon: <IconInfoCircle />
+            })
+            form.reset()
+        }).catch((err) => {
+            const errors = err?.response?.data
+            displayErrors(form, errors)
+            showNotification({
+                title: "Error",
+                message: "Unable to complete your request at this time! Try again later",
+                color: "red",
+                icon: <IconInfoCircle />
+            })
+        }).finally(() => {
+            setLoading(false)
+        })
+    }
+ 
     return (
         <div>
             <Head>
                 <title>{`${APP_NAME} ${SEPARATOR} Local Purchase Order Form`}</title>
             </Head>
-            {/* <CustomHeading title="Request For Quotation Form" /> */}
             <Container size="lg" mt={20} my="lg">
                 <Paper py={30} px={30} radius="md" sx={theme => ({
                     background: getTheme(theme) ? theme.colors.dark[6] : theme.colors.gray[0]
                 })}>
-                    <form>
+                     <LoadingOverlay visible={loading} />
+                    <form onSubmit={form.onSubmit(values => submitForm())}>
                         <Stack spacing={20}>
                             {
                                 form.values.country?.toLowerCase() === 'kenya' ?
@@ -226,7 +285,7 @@ const LocalPurchaseOrder = ({ projects, checkers, user }: IProps) => {
                             <Group position="right">
                                 <Title order={3} weight={600}>Total</Title>
                                 <Title order={3} weight={600}>
-                                    {`KSH ${formatCurrency(getAmountTotal())}`}
+                                    {`${form.values?.currency?.toUpperCase()} ${formatCurrency(getAmountTotal())}`}
                                 </Title>
                             </Group>
                             <ExtraFields form={form} />
@@ -248,6 +307,9 @@ const LocalPurchaseOrder = ({ projects, checkers, user }: IProps) => {
                                 </Grid>
                             </Box>
                             <InvoiceFooter />
+                            <Group position='center'>
+                                <Button type='submit'>Submit</Button>
+                            </Group>
                         </Stack>
                     </form>
                 </Paper>

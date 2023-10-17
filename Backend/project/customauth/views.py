@@ -33,7 +33,7 @@ class CustomLogin(ObtainAuthToken):
             'token': token.key,
             'user_id': user.pk,
             'email': user.email,
-            'user': AccountSerializer(user).data
+            'user': AccountSerializer(user, context={'request': request}).data
         })
 
 
