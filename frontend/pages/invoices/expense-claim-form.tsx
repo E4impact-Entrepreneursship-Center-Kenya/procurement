@@ -1,25 +1,22 @@
 import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
-import { APP_NAME, FOUNDATION_LOGO, INVOICE_LEVELS, LOCAL_STORAGE_KEYS, SEPARATOR, URLS, WEBSITE_LOGO } from '../../config/constants'
-import { ActionIcon, Box, Button, Card, Container, Group, Image, NumberInput, Paper, Select, Stack, TextInput, Textarea, Title } from '@mantine/core'
-import CustomHeading from '../../components/navigations/CustomHeading'
+import { APP_NAME, EMOJIS, FOUNDATION_LOGO, INVOICE_LEVELS, LOCAL_STORAGE_KEYS, SEPARATOR, URLS, WEBSITE_LOGO } from '../../config/constants'
+import { ActionIcon, Box, Button, Container, Group, Image, LoadingOverlay, NumberInput, Paper, Select, Stack, TextInput, Textarea, Title } from '@mantine/core'
 import HeaderAndFooterWrapper from '../../layouts/HeaderAndFooterWrapper'
 import InvoiceFooter from '../../components/invoice/InvoiceFooter'
 import InvoiceHeader from '../../components/invoice/InvoiceHeader'
-import { formatCurrency, getTheme, makeRequestOne } from '../../config/config'
-import InvoiceTitle from '../../components/invoice/InvoiceTitle'
+import { convertJSONToFormData, formatCurrency, formatDateToYYYYMMDD, getTheme, makeRequestOne } from '../../config/config'
 import ExpenseClaimFields from '../../components/invoice/initial_fields/ExpenseClaimFields'
 import { useForm } from '@mantine/form'
-import { IconTrash, IconPlus } from '@tabler/icons'
+import { IconTrash, IconPlus, IconExclamationMark, IconInfoCircle } from '@tabler/icons'
 import { DataTable } from 'mantine-datatable'
-import budgetLines from '../api/accounting/budget-lines'
-import { Prism } from '@mantine/prism'
 import { useAppContext } from '../../providers/appProvider'
 import customRedirect from '../../middleware/redirectIfNoAuth'
 import requireAuthMiddleware from '../../middleware/requireAuthMiddleware'
 import ApprovalsSection from '../../components/invoice/ApprovalsSection'
 import ApprovalPerson from '../../components/invoice/Approvals'
-import FormTitle from '../../components/invoice/FormTitle'
+import { showNotification } from '@mantine/notifications'
+import { displayErrors } from '../../config/functions'
 
 const SINGLE_ITEM = {
     no: '',
@@ -157,6 +154,57 @@ const ExpenseClaim = ({ projects, checkers, user }: IProps) => {
         }).catch(() => { })
     }
 
+    function submitForm() {
+        let data: any = structuredClone(form.values)
+        data.requested_by.user = user_id
+
+        let items: any = data.items.filter((ln: any) => ln?.description !== "")
+        if (items.length === 0) {
+            showNotification({
+                title: "No items",
+                message: "You don't have any items in your form",
+                color: "red",
+                icon: <IconExclamationMark />
+            })
+            return
+        }
+        setLoading(true)
+        data.total = getAmountTotal(data.items)
+        data.items = JSON.stringify(items)
+        let requested_by_date = formatDateToYYYYMMDD(data.requested_by.date)
+        data.requested_by.date = requested_by_date
+
+        const formData = convertJSONToFormData(data)
+        makeRequestOne({
+            url: URLS.EXPENSE_CLAIM_FORMS,
+            method: "POST",
+            data: formData,
+            extra_headers: {
+                authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            }
+        }).then((res: any) => {
+            showNotification({
+                title: `Submission successful ${EMOJIS.partypopper}`,
+                message: "Congratulations! Your form has been submitted successfully",
+                color: "green",
+                icon: <IconInfoCircle />
+            })
+            form.reset()
+        }).catch((err) => {
+            const errors = err?.response?.data
+            displayErrors(form, errors)
+            showNotification({
+                title: "Error",
+                message: "Unable to complete your request at this time! Try again later",
+                color: "red",
+                icon: <IconInfoCircle />
+            })
+        }).finally(() => {
+            setLoading(false)
+        })
+    }
+
     useEffect(() => {
         loadBudgetLines()
     }, [form.values.project])
@@ -171,11 +219,9 @@ const ExpenseClaim = ({ projects, checkers, user }: IProps) => {
                 <Paper py={30} px={30} radius="md" sx={theme => ({
                     background: getTheme(theme) ? theme.colors.dark[6] : theme.colors.gray[0]
                 })}>
-                    <form>
+                    <LoadingOverlay visible={loading} />
+                    <form onSubmit={form.onSubmit(values => submitForm())}>
                         <Stack spacing={20}>
-                            {/* <FormTitle title='Expense Claim Form' />
-                            <InvoiceHeader />
-                            <InvoiceTitle title='EXPENSE CLAIM FORM (KSHS)' /> */}
 
                             {
                                 form.values.country?.toLowerCase() === 'kenya' ?
@@ -208,6 +254,9 @@ const ExpenseClaim = ({ projects, checkers, user }: IProps) => {
                                 <ApprovalPerson person={'Amount Received'} form={form} field_prefix={'amount_received'} field_name={'amount'} active={false} level={INVOICE_LEVELS.LEVEL_1} />
                             </ApprovalsSection>
                             <InvoiceFooter />
+                            <Group position='center'>
+                                <Button type='submit'>Submit</Button>
+                            </Group>
                         </Stack>
                     </form>
                 </Paper>

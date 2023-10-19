@@ -15,6 +15,9 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/account/forms/cash-advance-forms"],
-  "exclude": ["node_modules"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"],
+  "paths": {
+    "react": [ "./node_modules/@types/react" ]
+  }
 }

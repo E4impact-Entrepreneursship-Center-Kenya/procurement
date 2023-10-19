@@ -148,7 +148,6 @@ class ExpenseClaimForm(models.Model):
     budget_line = models.ForeignKey(BudgetLine, blank=False, null=True, on_delete=models.SET_NULL)
     purpose = models.TextField(null=True)
     reason = models.TextField(blank=True, null=True)
-    expense_incured = models.TextField(blank=True, null=True)
 
     items = models.JSONField(blank=False, null=True)
     total = models.FloatField(blank=False, null=True)
@@ -166,34 +165,29 @@ class PurchaseRequisitionForm(models.Model):
     currency = models.CharField(max_length=30, blank=False, null=True)
     requested_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
                                      related_name='purchase_requested_by')
-    delivered_to = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
-                                     related_name=' purchase_delivered_to')
-    checker = models.ForeignKey(User, blank=False, null=True, on_delete=models.SET_NULL,
-                                related_name='purchase_checker')
-    checked_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
-                                   related_name='purchase_checked_by')
+    delivered_to = models.CharField(blank=True, null=True, max_length=255)
 
     approver = models.ForeignKey(User, blank=False, null=True, on_delete=models.SET_NULL,
                                  related_name='purchase_approver')
     approved_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
                                     related_name='purchase_approved_by')
-    items_required_by = models.DateField(blank=False, null=True)
+    date_required = models.DateField(blank=False, null=True)
+    requisition_date = models.DateField(blank=False, null=True)
 
-    amount_received = models.ForeignKey(AmountReceived, blank=False, null=True, on_delete=models.SET_NULL)
-
-    name = models.CharField(max_length=70, blank=False, null=True)
     level = models.IntegerField(blank=False, null=True)
     invoice_number = models.CharField(max_length=30, blank=False, null=True)
     bank_batch_no = models.CharField(max_length=20, blank=False, null=True)
 
-    # cash_advance_received = models.FloatField(blank=False, null=True)
     project = models.ForeignKey(Project, blank=False, null=True, on_delete=models.SET_NULL)
-    budget_line = models.ForeignKey(BudgetLine, blank=False, null=True, on_delete=models.SET_NULL)
-    purpose = models.TextField(null=True)
-    reason = models.TextField(blank=True, null=True)
 
     items = models.JSONField(blank=False, null=True)
     total = models.FloatField(blank=False, null=True)
+
+    budget_availability = models.BooleanField(default=False)
+    verified_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
+                                    related_name='purchase_verified_by')
+    confirmed_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
+                                     related_name='purchase_confirmed_by')
 
     is_completed = models.BooleanField(default=False)
     created_on = models.DateTimeField(auto_now_add=True)
@@ -208,15 +202,20 @@ class LocalPurchaseOrderForm(models.Model):
     currency = models.CharField(max_length=30, blank=False, null=True)
     invoice_number = models.CharField(max_length=30, blank=False, null=True)
     bank_batch_no = models.CharField(max_length=20, blank=False, null=True)
+
     project = models.ForeignKey(Project, blank=False, null=True, on_delete=models.SET_NULL)
-    budget_line = models.ForeignKey(BudgetLine, blank=False, null=True, on_delete=models.SET_NULL)
+    models.ForeignKey(BudgetLine, blank=False, null=True, on_delete=models.SET_NULL)
+
     date = models.DateField(blank=False, null=True)
     payment_terms = models.CharField(max_length=70, blank=False, null=True)
     delivery_date = models.DateField(blank=False, null=True)
     supplier = models.CharField(max_length=70, blank=False, null=True)
     address = models.CharField(max_length=70, blank=False, null=True)
     mobile = models.CharField(max_length=70, blank=False, null=True)
+
     items = models.JSONField(blank=False, null=True)
+    total = models.FloatField(blank=False, null=True)
+
     requested_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
                                      related_name='local_purchase_requested_by')
     delivery_costs = models.FloatField(blank=False, null=True)
@@ -228,9 +227,10 @@ class LocalPurchaseOrderForm(models.Model):
     updated_on = models.DateTimeField(auto_now=True)
 
 
-class RequestForQuatationForm(models.Model):
+class RequestForQuotationForm(models.Model):
     country = models.CharField(max_length=30, blank=False, null=True)
     currency = models.CharField(max_length=30, blank=False, null=True)
+    level = models.IntegerField(blank=False, null=True)
     vendor_name = models.CharField(max_length=70, blank=False, null=True)
     invoice_number = models.CharField(max_length=30, blank=False, null=True)
     address = models.CharField(max_length=70, blank=False, null=True)
@@ -240,9 +240,20 @@ class RequestForQuatationForm(models.Model):
     delivery_period = models.CharField(max_length=70, blank=False, null=True)
     price_validity_period = models.CharField(max_length=70, blank=False, null=True)
     payment_terms = models.CharField(max_length=70, blank=False, null=True)
-    warranty_period = models.CharField(max_length=70, blank=False, null=True)
+    warrant_period = models.CharField(max_length=70, blank=False, null=True)
 
-class UnderExpendintureForm(models.Model):
+    items = models.JSONField(blank=False, null=True)
+    total = models.FloatField(blank=False, null=True)
+
+    requested_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
+                                     related_name='request_for_quotation_requested_by')
+
+    is_completed = models.BooleanField(default=False)
+    created_on = models.DateTimeField(auto_now_add=True, null=True)
+    updated_on = models.DateTimeField(auto_now=True)
+
+
+class UnderExpenditureForm(models.Model):
     country = models.CharField(max_length=30, blank=False, null=True)
     currency = models.CharField(max_length=30, blank=False, null=True)
     invoice_number = models.CharField(max_length=30, blank=False, null=True)
@@ -252,26 +263,35 @@ class UnderExpendintureForm(models.Model):
     amt_received = models.FloatField(blank=False, null=True)
     project = models.ForeignKey(Project, blank=False, null=True, on_delete=models.SET_NULL)
     project_code = models.CharField(max_length=70, blank=False, null=True)
-    items = models.JSONField(blank=False, null=True)
+
     requested_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
                                      related_name='under_expenditure_requested_by')
     checker = models.ForeignKey(User, blank=False, null=True, on_delete=models.SET_NULL,
                                 related_name='under_expenditure_checker')
     checked_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
-                                      related_name='under_expenditure_checked_by')
+                                   related_name='under_expenditure_checked_by')
     approved_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
-                                        related_name='under_expenditure_approved_by')
+                                    related_name='under_expenditure_approved_by')
     approver = models.ForeignKey(User, blank=False, null=True, on_delete=models.SET_NULL,
-                                    related_name='under_expenditure_approver')
+                                 related_name='under_expenditure_approver')
 
-    # items = models.JSONField(blank=False, null=True)
-    # total = models.FloatField(blank=False, null=True)
+    account_number = models.CharField(max_length=30, blank=True, null=True)
+    amount_deposited = models.IntegerField(blank=True, null=True)
+    mpesa_code = models.CharField(max_length=30, blank=True, null=True)
+    ref_id = models.CharField(max_length=30, blank=True, null=True)
+    date = models.DateField(blank=True, null=True)
+    time = models.TimeField(blank=True, null=True)
 
+    items = models.JSONField(blank=False, null=True)
+    total = models.FloatField(blank=False, null=True)
+
+    level = models.IntegerField(blank=False, null=True)
     is_completed = models.BooleanField(default=False)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
-class OverExpendintureForm(models.Model):
+
+class OverExpenditureForm(models.Model):
     country = models.CharField(max_length=30, blank=False, null=True)
     currency = models.CharField(max_length=30, blank=False, null=True)
     invoice_number = models.CharField(max_length=30, blank=False, null=True)
@@ -280,25 +300,23 @@ class OverExpendintureForm(models.Model):
     amt_received_description = models.CharField(max_length=70, blank=False, null=True)
     amt_received = models.FloatField(blank=False, null=True)
     project = models.ForeignKey(Project, blank=False, null=True, on_delete=models.SET_NULL)
-    project_code = models.CharField(max_length=70, blank=False, null=True)
-    items = models.JSONField(blank=False, null=True)
+    project_code = models.CharField(max_length=70, blank=True, null=True)
+
     requested_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
                                      related_name='over_expenditure_requested_by')
     checker = models.ForeignKey(User, blank=False, null=True, on_delete=models.SET_NULL,
                                 related_name='over_expenditure_checker')
     checked_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
-                                      related_name='over_expenditure_checked_by')
+                                   related_name='over_expenditure_checked_by')
     approved_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
-                                        related_name='over_expenditure_approved_by')
+                                    related_name='over_expenditure_approved_by')
     approver = models.ForeignKey(User, blank=False, null=True, on_delete=models.SET_NULL,
-                                    related_name='under_expenditure_approver')
+                                 related_name='over_expenditure_approver')
 
-    # items = models.JSONField(blank=False, null=True)
-    # total = models.FloatField(blank=False, null=True)
+    items = models.JSONField(blank=False, null=True)
+    total = models.FloatField(blank=False, null=True)
 
+    level = models.IntegerField(blank=False, null=True)
     is_completed = models.BooleanField(default=False)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
-
-
-    

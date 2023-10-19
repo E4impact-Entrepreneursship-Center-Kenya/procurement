@@ -6,11 +6,10 @@ from account.serializers import AccountSerializer
 
 
 class ProjectSerializer(BaseSerializer, serializers.ModelSerializer):
-
     class Meta:
         model = Project
         fields = ['id', 'created_by', 'name', 'code', 'created_on', 'updated_on']
-        
+
     def to_representation(self, instance):
         fields = self.get_fields()
         required_fields = set(fields.keys())
@@ -62,7 +61,8 @@ class CashAdvanceFormSerializer(BaseSerializer, serializers.ModelSerializer):
 
     class Meta:
         model = CashAdvanceForm
-        fields = ['id', 'country', 'currency', 'requested_by', 'checker', 'checked_by', 'approver', 'approved_by', 'amount_received', 'name',
+        fields = ['id', 'country', 'currency', 'requested_by', 'checker', 'checked_by', 'approver', 'approved_by',
+                  'amount_received', 'name',
                   'level', 'invoice_number', 'bank_batch_no', 'date', 'purpose', 'project', 'activity_end_date',
                   'expected_liquidation_date', 'items', 'total', 'is_completed', 'created_on', 'updated_on']
 
@@ -99,7 +99,6 @@ class CashAdvanceFormSerializer(BaseSerializer, serializers.ModelSerializer):
 
 
 class NotificationSerializer(BaseSerializer, serializers.ModelSerializer):
-
     class Meta:
         model = Notification
         fields = ['id', 'receiver', 'sender', 'form', 'message', 'url', 'read', 'created_on', 'updated_on']
@@ -119,22 +118,23 @@ class ExpenseClaimFormSerializer(BaseSerializer, serializers.ModelSerializer):
 
     class Meta:
         model = ExpenseClaimForm
-        fields = ['id', 'country', 'currency', 'requested_by', 'checker', 'checked_by', 'approver', 'approved_by', 'amount_received', 'name',
-                  'level', 'invoice_number', 'bank_batch_no', 'purpose', 'project', 'budget_line', 'expense_incured'
-                  'reason', 'items', 'total', 'is_completed', 'created_on', 'updated_on']
+        fields = ['id', 'country', 'currency', 'requested_by', 'checker', 'checked_by', 'approver', 'approved_by',
+                  'amount_received', 'name', 'level', 'invoice_number', 'bank_batch_no', 'purpose', 'project',
+                  'budget_line', 'cash_advance_received', 'reason', 'items', 'total',
+                  'is_completed', 'created_on', 'updated_on']
 
     def create(self, validated_data):
         requested_by_data = {
-            'user': self.initial_data.get('expense_requested_by[user]'),
-            'signature': self.initial_data.get('expense_requested_by[signature]'),
-            'date': self.initial_data.get('expense_requested_by[date]'),
+            'user': self.initial_data.get('requested_by[user]'),
+            'signature': self.initial_data.get('requested_by[signature]'),
+            'date': self.initial_data.get('requested_by[date]'),
         }
         requested_by_serializer = FormUserSerializer(data=requested_by_data)
         requested_by = None
         if requested_by_serializer.is_valid():
             requested_by = requested_by_serializer.save()
 
-        validated_data['expense_requested_by'] = requested_by
+        validated_data['requested_by'] = requested_by
         return super().create(validated_data)
 
     def to_representation(self, instance):
@@ -153,121 +153,139 @@ class ExpenseClaimFormSerializer(BaseSerializer, serializers.ModelSerializer):
         if 'amount_received' in required_fields:
             self.fields['amount_received'] = AmountReceivedSerializer(many=False)
         return super(ExpenseClaimFormSerializer, self).to_representation(instance)
-    
-class RequestForQuatationFormSerializer(BaseSerializer, serializers.ModelSerializer):
+
+
+class RequestForQuotationFormSerializer(BaseSerializer, serializers.ModelSerializer):
     requested_by = FormUserSerializer(many=False, required=False)
 
-
     class Meta:
-        model = RequestForQuatationForm
-        fields = ['id', 'country', 'currency', 'requested_by', 'vendor_name', 'address', 'phone_number', 'delivery_period', 'price_validity_period', 'warranty_period' 'name',
-                  'payment_terms', 'level', 'invoice_number', 'bank_batch_no', 'items_required_by', 'items', 'total', 'is_completed', 'created_on', 'updated_on']
-        
+        model = RequestForQuotationForm
+        fields = ['id', 'country', 'currency','invoice_number', 'bank_batch_no', 'requested_by', 'vendor_name',
+                  'address', 'phone_number', 'delivery_period', 'price_validity_period', 'warrant_period',
+                  'payment_terms', 'level',  'items', 'total', 'requested_by', 'is_completed', 'created_on',
+                  'updated_on']
+
     def create(self, validated_data):
         requested_by_data = {
-            'user': self.initial_data.get('quatation_requested_by[user]'),
-            'signature': self.initial_data.get('quatation_requested_by[signature]'),
-            'date': self.initial_data.get('quatation_requested_by[date]'),
+            'user': self.initial_data.get('requested_by[user]'),
+            'signature': self.initial_data.get('requested_by[signature]'),
+            'date': self.initial_data.get('requested_by[date]'),
         }
         requested_by_serializer = FormUserSerializer(data=requested_by_data)
         requested_by = None
         if requested_by_serializer.is_valid():
             requested_by = requested_by_serializer.save()
 
-        validated_data['quatation_requested_by'] = requested_by
+        validated_data['requested_by'] = requested_by
         return super().create(validated_data)
 
-class OverExpendintureFormSerializer(BaseSerializer, serializers.ModelSerializer):
+
+class OverExpenditureFormSerializer(BaseSerializer, serializers.ModelSerializer):
     requested_by = FormUserSerializer(many=False, required=False)
 
     class Meta:
-        model = OverExpendintureForm
-        fields = ['id', 'country', 'currency', 'requested_by', 'checker', 'checked_by', 'approver', 'approved_by', 'amt_received_description', 'amount_received', 'name',
-                  'level', 'invoice_number', 'bank_batch_no', 'date', 'project', 'project_code', 'budget_line', 'items', 'total', 'is_completed', 'created_on', 'updated_on']
-        
+        model = OverExpenditureForm
+        fields = ['id', 'country', 'currency', 'requested_by', 'checker', 'checked_by', 'approver', 'approved_by',
+                  'amt_received_description', 'amt_received',
+                  'level', 'invoice_number', 'bank_batch_no', 'date_of_receipt', 'project', 'project_code',
+                  'items', 'total', 'is_completed', 'created_on', 'updated_on']
+
     def create(self, validated_data):
         requested_by_data = {
-            'user': self.initial_data.get('over_expenditure_requested_by[user]'),
-            'signature': self.initial_data.get('over_expenditure_requested_by[signature]'),
-            'date': self.initial_data.get('over_expenditure_requested_by[date]'),
+            'user': self.initial_data.get('requested_by[user]'),
+            'signature': self.initial_data.get('requested_by[signature]'),
+            'date': self.initial_data.get('requested_by[date]'),
         }
         requested_by_serializer = FormUserSerializer(data=requested_by_data)
         requested_by = None
         if requested_by_serializer.is_valid():
             requested_by = requested_by_serializer.save()
 
-            validated_data['over_expenditure_requested_by'] = requested_by
+            validated_data['requested_by'] = requested_by
             return super().create(validated_data)
+<<<<<<< HEAD
         elif requested_by_serializer.errors:
             print(requested_by_serializer.errors)
             return requested_by_serializer.errors
         
 class UnderExpendintureFormSerializer(BaseSerializer, serializers.ModelSerializer):
+=======
+
+
+class UnderExpenditureFormSerializer(BaseSerializer, serializers.ModelSerializer):
+>>>>>>> ce0ae9f5fcd641809c8e901394d38a137847aa0f
     requested_by = FormUserSerializer(many=False, required=False)
 
     class Meta:
-        model = OverExpendintureForm
-        fields = ['id', 'country', 'currency', 'requested_by', 'checker', 'checked_by', 'approver', 'approved_by', 'amt_received_description', 'amount_received', 'name',
-                  'level', 'invoice_number', 'bank_batch_no', 'date', 'project', 'project_code', 'budget_line', 'items', 'total', 'is_completed', 'created_on', 'updated_on']
-        
+        model = UnderExpenditureForm
+        fields = ['id', 'country', 'currency', 'requested_by', 'checker', 'checked_by', 'approver', 'approved_by',
+                  'amt_received_description', 'amt_received',
+                  'level', 'invoice_number', 'bank_batch_no', 'date_of_receipt', 'project', 'project_code',
+                  'items', 'total', 'is_completed', 'created_on', 'updated_on', 'account_number', 'amount_deposited',
+                  'mpesa_code', 'ref_id', 'date', 'time']
+
     def create(self, validated_data):
         requested_by_data = {
-            'user': self.initial_data.get('under_expenditure_requested_by[user]'),
-            'signature': self.initial_data.get('under_expenditure_requested_by[signature]'),
-            'date': self.initial_data.get('under_expenditure_requested_by[date]'),
+            'user': self.initial_data.get('requested_by[user]'),
+            'signature': self.initial_data.get('requested_by[signature]'),
+            'date': self.initial_data.get('requested_by[date]'),
         }
         requested_by_serializer = FormUserSerializer(data=requested_by_data)
         requested_by = None
         if requested_by_serializer.is_valid():
             requested_by = requested_by_serializer.save()
 
-            validated_data['under_expenditure_requested_by'] = requested_by
+            validated_data['requested_by'] = requested_by
             return super().create(validated_data)
-        
+
+
 class LocalPurchaseOrderFormSerializer(BaseSerializer, serializers.ModelSerializer):
     requested_by = FormUserSerializer(many=False, required=False)
 
     class Meta:
         model = LocalPurchaseOrderForm
-        fields = ['id', 'country', 'currency', 'invoice_number', 'bank_batch_no', 'project', 'budget_line', 'date', 'payment_terms', 'delivery_date', 
-                  'supplier', 'address', 'mobile', 'items', 'requested_by', 'delivery_costs', 'return_to_name', 'return_to_email', 'is_completed', 'created_on', 'updated_on']
-                  
-        
+        fields = ['id', 'country', 'currency', 'invoice_number', 'bank_batch_no', 'project', 'budget_line', 'date',
+                  'payment_terms', 'delivery_date',
+                  'supplier', 'address', 'mobile', 'items', 'total', 'requested_by', 'delivery_costs', 'return_to_name',
+                  'return_to_email', 'is_completed', 'created_on', 'updated_on']
+
     def create(self, validated_data):
         requested_by_data = {
-            'user': self.initial_data.get('local_purchase_requested_by[user]'),
-            'signature': self.initial_data.get('local_purchase_requested_by[signature]'),
-            'date': self.initial_data.get('local_purchase_requested_by[date]'),
+            'user': self.initial_data.get('requested_by[user]'),
+            'signature': self.initial_data.get('requested_by[signature]'),
+            'date': self.initial_data.get('requested_by[date]'),
         }
         requested_by_serializer = FormUserSerializer(data=requested_by_data)
         requested_by = None
         if requested_by_serializer.is_valid():
             requested_by = requested_by_serializer.save()
 
-        validated_data['local_purchase_requested_by'] = requested_by
+        validated_data['requested_by'] = requested_by
         return super().create(validated_data)
-    
+
+
 class PurchaseRequisitionFormSerializer(BaseSerializer, serializers.ModelSerializer):
     requested_by = FormUserSerializer(many=False, required=False)
 
     class Meta:
-        model = ExpenseClaimForm
-        fields = ['id', 'country', 'currency', 'requested_by', 'delivered_to', 'checker', 'checked_by', 'approver', 'approved_by', 'amount_received', 'name',
-                  'level', 'invoice_number', 'bank_batch_no', 'date', 'purpose', 'project',
-                  'items_required_by', 'items', 'total', 'is_completed', 'created_on', 'updated_on']
+        model = PurchaseRequisitionForm
+        fields = ['id', 'country', 'currency', 'requested_by', 'delivered_to', 'approver',
+                  'approved_by', 'date_required', 'requisition_date',
+                  'level', 'invoice_number', 'bank_batch_no', 'project', 'items', 'total', 'budget_availability',
+                  'verified_by', 'confirmed_by', 'is_completed', 'created_on', 'updated_on']
 
     def create(self, validated_data):
         requested_by_data = {
-            'user': self.initial_data.get('purchase_requested_by[user]'),
-            'signature': self.initial_data.get('purchase_requested_by[signature]'),
-            'date': self.initial_data.get('purchase_requested_by[date]'),
+            'user': self.initial_data.get('requested_by[user]'),
+            'signature': self.initial_data.get('requested_by[signature]'),
+            'date': self.initial_data.get('requested_by[date]'),
         }
         requested_by_serializer = FormUserSerializer(data=requested_by_data)
         requested_by = None
         if requested_by_serializer.is_valid():
             requested_by = requested_by_serializer.save()
 
-        validated_data['purchase_requested_by'] = requested_by
+        validated_data['requested_by'] = requested_by
         return super().create(validated_data)
 
     def to_representation(self, instance):
@@ -275,15 +293,11 @@ class PurchaseRequisitionFormSerializer(BaseSerializer, serializers.ModelSeriali
         required_fields = set(fields.keys())
         if 'project' in required_fields:
             self.fields['project'] = ProjectSerializer(many=False)
-        # if 'checker' in required_fields:
-        #     self.fields['checker'] = AccountSerializer(many=False)
-        if 'purchase_checked_by' in required_fields:
-            self.fields['purchase_checked_by'] = FormUserSerializer(many=False)
-        # if 'approver' in required_fields:
-        #     self.fields['approver'] = AccountSerializer(many=False)
+        if 'approver' in required_fields:
+            self.fields['approver'] = AccountSerializer(many=False)
         if 'approved_by' in required_fields:
-            self.fields['purchase_approved_by'] = FormUserSerializer(many=False)
+            self.fields['approved_by'] = FormUserSerializer(many=False)
         if 'amount_received' in required_fields:
             self.fields['amount_received'] = AmountReceivedSerializer(many=False)
-        return super(ExpenseClaimFormSerializer, self).to_representation(instance)
+        return super(PurchaseRequisitionFormSerializer, self).to_representation(instance)
 

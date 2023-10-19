@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
 import { APP_NAME, EMOJIS, FOUNDATION_LOGO, INVOICE_LEVELS, LOCAL_STORAGE_KEYS, SEPARATOR, URLS, WEBSITE_LOGO } from '../../config/constants'
-import { ActionIcon, Box, Button, Container, Group, Image, LoadingOverlay, NumberInput, Paper, Select, Stack, TextInput, Textarea, Title } from '@mantine/core'
+import { ActionIcon, Box, Button, Container, Group, Image, LoadingOverlay, NumberInput, Paper, Select, Stack, TextInput, Title } from '@mantine/core'
 import HeaderAndFooterWrapper from '../../layouts/HeaderAndFooterWrapper'
 import InvoiceHeader from '../../components/invoice/InvoiceHeader'
 import InvoiceFooter from '../../components/invoice/InvoiceFooter'
@@ -17,7 +17,6 @@ import ApprovalsSection from '../../components/invoice/ApprovalsSection'
 import { showNotification } from '@mantine/notifications'
 import { displayErrors } from '../../config/functions'
 import requireAuthMiddleware from '../../middleware/requireAuthMiddleware'
-import customRedirect from '../../middleware/redirectIfNoAuth'
 
 const SINGLE_ITEM = {
     no: "",

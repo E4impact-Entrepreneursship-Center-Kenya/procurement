@@ -6,7 +6,7 @@ export default async function middleware(req: NextRequest) {
     const cookie_name = LOCAL_STORAGE_KEYS.token
     const CHECK_URL = `${DEFAULT_API_ROOT}${URLS.CHECK_LOGIN_STATUS}/`
     const token = cookies.get(cookie_name)
-    console.log("token: ", token)
+
     const res = await fetch(CHECK_URL, {
         method: "GET",
         headers: {
@@ -14,7 +14,7 @@ export default async function middleware(req: NextRequest) {
         },
     });
     const data = await res?.json()
-    console.log("Respofdsfdnse", data)
+    
     if (data) {
         if (data?.logged_in) {
             return NextResponse.next()
