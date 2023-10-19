@@ -198,6 +198,9 @@ class OverExpendintureFormSerializer(BaseSerializer, serializers.ModelSerializer
 
             validated_data['over_expenditure_requested_by'] = requested_by
             return super().create(validated_data)
+        elif requested_by_serializer.errors:
+            print(requested_by_serializer.errors)
+            return requested_by_serializer.errors
         
 class UnderExpendintureFormSerializer(BaseSerializer, serializers.ModelSerializer):
     requested_by = FormUserSerializer(many=False, required=False)
