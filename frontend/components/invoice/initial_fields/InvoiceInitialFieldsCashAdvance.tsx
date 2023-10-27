@@ -1,8 +1,9 @@
-import { Grid, Select, Text, TextInput, Textarea, Title } from '@mantine/core'
+import { Grid, Select, TextInput, Textarea } from '@mantine/core'
 import { DateInput } from '@mantine/dates'
-import React, { useEffect, useMemo } from 'react'
+import React, {  } from 'react'
 import { toDate } from '../../../config/config'
 import { COUNTRIES, CURRENCIES } from '../../../config/constants'
+import FormValue from './FormValue'
 
 interface IInvoiceInitialFieldsCashAdvance {
     form: any
@@ -90,17 +91,6 @@ const InvoiceInitialFieldsCashAdvance = ({ form, projects }: IInvoiceInitialFiel
     )
 }
 
-
-const FormValue = (props: any) => {
-    const { title, value } = props
-    const mb = 0
-    return (
-        <>
-            <Title order={4} weight={500} mb={mb} size={'sm'}>{title}</Title>
-            <Text size="xs">{value}</Text>
-        </>
-    )
-}
 
 export const InvoiceInitialFieldsCashAdvanceNoInputs = ({ form }: IInvoiceInitialFieldsCashAdvance) => {
 

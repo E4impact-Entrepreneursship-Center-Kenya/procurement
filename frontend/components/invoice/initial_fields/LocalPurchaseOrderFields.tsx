@@ -1,4 +1,4 @@
-import { Stack, Grid, TextInput, List, Text, Select, Title, Radio, Group } from '@mantine/core'
+import { Stack, Grid, TextInput, Text, Select, Title, Radio, Group } from '@mantine/core'
 import { DateInput } from '@mantine/dates'
 import React, { useEffect, useState } from 'react'
 import { COUNTRIES, CURRENCIES, URLS } from '../../../config/constants'

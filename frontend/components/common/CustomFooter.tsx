@@ -4,7 +4,7 @@ import { PRIMARY_SHADE, BLUE_DARK_COLOR, APP_NAME, LINK_WEIGHT } from '../../con
 import publicStyles from '../../styles/publicStyles';
 import { getTheme } from '../../config/config';
 import Link from 'next/link';
-import { IconBrandFacebook, IconBrandInstagram, IconBrandLinkedin, IconBrandTwitter, IconBrandWhatsapp, IconMessage, IconPhoneCall, IconMail, IconMailFast } from '@tabler/icons';
+import { IconBrandFacebook, IconBrandInstagram, IconBrandLinkedin, IconBrandTwitter, IconBrandWhatsapp, IconMessage, IconPhoneCall, IconMailFast } from '@tabler/icons';
 import { IconChevronRight } from '@tabler/icons';
 
 interface ServiceProps {

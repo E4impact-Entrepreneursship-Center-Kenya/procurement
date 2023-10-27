@@ -8,13 +8,13 @@ interface IApprovalsSection {
 
 const ApprovalsSection = ({ children }: IApprovalsSection) => {
     return (
-        <Stack>
-            <Paper p={4} sx={theme => ({
+        <Stack spacing={2}>
+            <Paper p={2} sx={theme => ({
                 border: `1px solid ${getTheme(theme) ? theme.colors.dark[3] : theme.colors.gray[2]}`
             })}>
-                <Text align="center" color='green' weight={600} size={'md'}>APPROVALS</Text>
+                <Text align="center" color='green' weight={600} size={'sm'}>APPROVALS</Text>
             </Paper>
-            <Paper p={10} sx={theme => ({
+            <Paper p={4} sx={theme => ({
                 border: `2px solid ${getTheme(theme) ? theme.colors.dark[3] : theme.colors.gray[2]}`
             })}>
                 {children}

@@ -1,9 +1,9 @@
-import { Container, Title, Code, Grid, Card, Image, Stack } from "@mantine/core";
+import { Container, Title, Grid, Card, Image, Stack, Anchor } from "@mantine/core";
 import HeaderAndFooterWrapper from "../layouts/HeaderAndFooterWrapper";
-import publicStyles from "../styles/publicStyles";
 import requireAuthMiddleware from "../middleware/requireAuthMiddleware";
 import Link from "next/link";
 import { getTheme } from "../config/config";
+import { WEBSITE_LOGO } from "../config/constants";
 
 export interface IInvoice {
   title: string
@@ -25,6 +25,24 @@ export const InvoiceCard = ({ title, href, icon }: IInvoice) => {
         <Title order={3} weight={400} align="center" mt={'md'}>{title}</Title>
       </Card>
     </Link>
+  )
+}
+
+export const LinkCard = ({ title, href, icon }: IInvoice) => {
+  return (
+    <Anchor href={href} style={{ textDecoration: "none", width: "100%", height: "100%", display: "block" }} target="_blank">
+      <Card radius="md" sx={theme => ({
+        background: getTheme(theme) ? theme.colors.dark[4] : theme.colors.gray[0],
+        border: '2px solid transparent',
+        height: "100%",
+        ':hover': {
+          border: `2px solid ${theme.primaryColor}`
+        }
+      })}>
+        <Image src={icon} mx={'auto'} width={66} alt={title} />
+        <Title order={3} weight={400} align="center" mt={'md'}>{title}</Title>
+      </Card>
+    </Anchor>
   )
 }
 
@@ -92,12 +110,16 @@ function IndexPage(props: IIndexPage) {
                 </Grid.Col>
               ))
             }
+            <Grid.Col md={4}>
+              <LinkCard title="Procurement Policies & Procudures" key={'e4i-prod-manuel'} href="/docs/proc-policy.pdf" icon={WEBSITE_LOGO} />
+            </Grid.Col>
           </Grid>
         </Stack>
       </Container>
     </div>
   );
 }
+
 
 export const getServerSideProps = async (context: any) => {
   requireAuthMiddleware(context.req, context.res, () => { })

@@ -145,7 +145,7 @@ class NotificationViewSet(BulkModelViewSet):
 
 
 class ExpenseClaimFormViewSet(BulkModelViewSet):
-    queryset = ExpenseClaimForm.objects.all()
+    queryset = ExpenseClaimForm.objects.all().order_by('-id')
     serializer_class = ExpenseClaimFormSerializer
 
     authentication_classes = [AUTH_CLASS]
@@ -168,7 +168,7 @@ class RequestForQuotationFormViewSet(BulkModelViewSet):
     pagination_class = StandardResultsSetPagination
 
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    filterset_fields = ['checker__id', 'approver__id', 'requested_by__user__id']
+    filterset_fields = ['requested_by__user__id']
     search_fields = []
 
 
@@ -182,5 +182,5 @@ class PurchaseRequisitionFormViewSet(BulkModelViewSet):
     pagination_class = StandardResultsSetPagination
 
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    filterset_fields = ['checker__id', 'approver__id', 'requested_by__user__id']
+    filterset_fields = ['approver__id', 'requested_by__user__id']
     search_fields = []

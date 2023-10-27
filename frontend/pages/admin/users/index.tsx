@@ -1,6 +1,5 @@
 import { Stack, Switch, Text, Title } from "@mantine/core"
 import { DataTable } from "mantine-datatable"
-import router from "next/router"
 import { makeRequestOne, toDate } from "../../../config/config"
 import AdminWrapper from "../../../layouts/AdminWrapper"
 import requireAdminMiddleware from "../../../middleware/requireAdminMiddleware"

@@ -86,6 +86,7 @@ class CashAdvanceForm(models.Model):
 
     name = models.CharField(max_length=70, blank=False, null=True)
     level = models.IntegerField(blank=False, null=True)
+    max_level = models.IntegerField(default=4)
     invoice_number = models.CharField(max_length=30, blank=False, null=True)
     bank_batch_no = models.CharField(max_length=20, blank=False, null=True)
     date = models.DateField(blank=False, null=True)
@@ -126,22 +127,23 @@ class ExpenseClaimForm(models.Model):
     requested_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
                                      related_name='expense_requested_by')
 
-    checker = models.ForeignKey(User, blank=False, null=True, on_delete=models.SET_NULL,
+    checker = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL,
                                 related_name='expense_checker')
-    checked_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
+    checked_by = models.ForeignKey(FormUser, blank=True, null=True, on_delete=models.SET_NULL,
                                    related_name='expense_checked_by')
 
-    approver = models.ForeignKey(User, blank=False, null=True, on_delete=models.SET_NULL,
+    approver = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL,
                                  related_name='expense_approver')
-    approved_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
+    approved_by = models.ForeignKey(FormUser, blank=True, null=True, on_delete=models.SET_NULL,
                                     related_name='expense_approved_by')
 
-    amount_received = models.ForeignKey(AmountReceived, blank=False, null=True, on_delete=models.SET_NULL)
+    amount_received = models.ForeignKey(AmountReceived, blank=True, null=True, on_delete=models.SET_NULL)
 
     name = models.CharField(max_length=70, blank=False, null=True)
     level = models.IntegerField(blank=False, null=True)
-    invoice_number = models.CharField(max_length=30, blank=False, null=True)
-    bank_batch_no = models.CharField(max_length=20, blank=False, null=True)
+    max_level = models.IntegerField(default=4)
+    invoice_number = models.CharField(max_length=30, blank=True, null=True)
+    bank_batch_no = models.CharField(max_length=20, blank=True, null=True)
 
     cash_advance_received = models.FloatField(blank=False, null=True)
     project = models.ForeignKey(Project, blank=False, null=True, on_delete=models.SET_NULL)
@@ -175,6 +177,7 @@ class PurchaseRequisitionForm(models.Model):
     requisition_date = models.DateField(blank=False, null=True)
 
     level = models.IntegerField(blank=False, null=True)
+    max_level = models.IntegerField(default=4)
     invoice_number = models.CharField(max_length=30, blank=False, null=True)
     bank_batch_no = models.CharField(max_length=20, blank=False, null=True)
 
@@ -200,12 +203,19 @@ class PurchaseRequisitionForm(models.Model):
 class LocalPurchaseOrderForm(models.Model):
     country = models.CharField(max_length=30, blank=False, null=True)
     currency = models.CharField(max_length=30, blank=False, null=True)
-    invoice_number = models.CharField(max_length=30, blank=False, null=True)
-    bank_batch_no = models.CharField(max_length=20, blank=False, null=True)
+    invoice_number = models.CharField(max_length=30, blank=True, null=True)
+    bank_batch_no = models.CharField(max_length=20, blank=True, null=True)
 
     project = models.ForeignKey(Project, blank=False, null=True, on_delete=models.SET_NULL)
-    models.ForeignKey(BudgetLine, blank=False, null=True, on_delete=models.SET_NULL)
+    budget_line = models.ForeignKey(BudgetLine, blank=False, null=True, on_delete=models.SET_NULL)
 
+    approver = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL,
+                                 related_name='local_purchase_order_approver')
+    approved_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
+                                    related_name='local_purchase_order_approved_by')
+
+    level = models.IntegerField(blank=True, null=True)
+    max_level = models.IntegerField(default=2)
     date = models.DateField(blank=False, null=True)
     payment_terms = models.CharField(max_length=70, blank=False, null=True)
     delivery_date = models.DateField(blank=False, null=True)
@@ -219,6 +229,9 @@ class LocalPurchaseOrderForm(models.Model):
     requested_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
                                      related_name='local_purchase_requested_by')
     delivery_costs = models.FloatField(blank=False, null=True)
+    delivery_period = models.CharField(max_length=70, blank=False, null=True)
+    price_validity_period = models.CharField(max_length=70, blank=False, null=True)
+    warrant_period = models.CharField(max_length=70, blank=False, null=True)
     return_to_name = models.CharField(max_length=70, blank=False, null=True)
     return_to_email = models.CharField(max_length=70, blank=False, null=True)
 
@@ -231,6 +244,7 @@ class RequestForQuotationForm(models.Model):
     country = models.CharField(max_length=30, blank=False, null=True)
     currency = models.CharField(max_length=30, blank=False, null=True)
     level = models.IntegerField(blank=False, null=True)
+    max_level = models.IntegerField(default=1)
     vendor_name = models.CharField(max_length=70, blank=False, null=True)
     invoice_number = models.CharField(max_length=30, blank=False, null=True)
     address = models.CharField(max_length=70, blank=False, null=True)
@@ -256,8 +270,11 @@ class RequestForQuotationForm(models.Model):
 class UnderExpenditureForm(models.Model):
     country = models.CharField(max_length=30, blank=False, null=True)
     currency = models.CharField(max_length=30, blank=False, null=True)
-    invoice_number = models.CharField(max_length=30, blank=False, null=True)
-    bank_batch_no = models.CharField(max_length=20, blank=False, null=True)
+    invoice_number = models.CharField(max_length=30, blank=True, null=True)
+    bank_batch_no = models.CharField(max_length=20, blank=True, null=True)
+
+    payee = models.CharField(blank=True, null=True, max_length=100)
+    date = models.DateField(blank=True, null=True)
     date_of_receipt = models.DateField(blank=False, null=True)
     amt_received_description = models.CharField(max_length=70, blank=False, null=True)
     amt_received = models.FloatField(blank=False, null=True)
@@ -266,26 +283,26 @@ class UnderExpenditureForm(models.Model):
 
     requested_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
                                      related_name='under_expenditure_requested_by')
-    checker = models.ForeignKey(User, blank=False, null=True, on_delete=models.SET_NULL,
+    checker = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL,
                                 related_name='under_expenditure_checker')
-    checked_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
+    checked_by = models.ForeignKey(FormUser, blank=True, null=True, on_delete=models.SET_NULL,
                                    related_name='under_expenditure_checked_by')
-    approved_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
+    approved_by = models.ForeignKey(FormUser, blank=True, null=True, on_delete=models.SET_NULL,
                                     related_name='under_expenditure_approved_by')
-    approver = models.ForeignKey(User, blank=False, null=True, on_delete=models.SET_NULL,
+    approver = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL,
                                  related_name='under_expenditure_approver')
 
     account_number = models.CharField(max_length=30, blank=True, null=True)
     amount_deposited = models.IntegerField(blank=True, null=True)
     mpesa_code = models.CharField(max_length=30, blank=True, null=True)
     ref_id = models.CharField(max_length=30, blank=True, null=True)
-    date = models.DateField(blank=True, null=True)
     time = models.TimeField(blank=True, null=True)
 
     items = models.JSONField(blank=False, null=True)
     total = models.FloatField(blank=False, null=True)
 
-    level = models.IntegerField(blank=False, null=True)
+    level = models.IntegerField(blank=True, null=True)
+    max_level = models.IntegerField(default=3)
     is_completed = models.BooleanField(default=False)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
@@ -294,8 +311,11 @@ class UnderExpenditureForm(models.Model):
 class OverExpenditureForm(models.Model):
     country = models.CharField(max_length=30, blank=False, null=True)
     currency = models.CharField(max_length=30, blank=False, null=True)
-    invoice_number = models.CharField(max_length=30, blank=False, null=True)
-    bank_batch_no = models.CharField(max_length=20, blank=False, null=True)
+    invoice_number = models.CharField(max_length=30, blank=True, null=True)
+    bank_batch_no = models.CharField(max_length=20, blank=True, null=True)
+
+    payee = models.CharField(blank=True, null=True, max_length=100)
+    date = models.DateField(blank=True, null=True)
     date_of_receipt = models.DateField(blank=False, null=True)
     amt_received_description = models.CharField(max_length=70, blank=False, null=True)
     amt_received = models.FloatField(blank=False, null=True)
@@ -304,19 +324,21 @@ class OverExpenditureForm(models.Model):
 
     requested_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
                                      related_name='over_expenditure_requested_by')
-    checker = models.ForeignKey(User, blank=False, null=True, on_delete=models.SET_NULL,
+    checker = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL,
                                 related_name='over_expenditure_checker')
-    checked_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
+    checked_by = models.ForeignKey(FormUser, blank=True, null=True, on_delete=models.SET_NULL,
                                    related_name='over_expenditure_checked_by')
-    approved_by = models.ForeignKey(FormUser, blank=False, null=True, on_delete=models.SET_NULL,
+    approved_by = models.ForeignKey(FormUser, blank=True, null=True, on_delete=models.SET_NULL,
                                     related_name='over_expenditure_approved_by')
-    approver = models.ForeignKey(User, blank=False, null=True, on_delete=models.SET_NULL,
+    approver = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL,
                                  related_name='over_expenditure_approver')
 
     items = models.JSONField(blank=False, null=True)
     total = models.FloatField(blank=False, null=True)
+    reason = models.TextField(blank=True, null=True)
 
     level = models.IntegerField(blank=False, null=True)
+    max_level = models.IntegerField(default=3)
     is_completed = models.BooleanField(default=False)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)

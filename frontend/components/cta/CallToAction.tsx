@@ -1,5 +1,4 @@
 import { Card, Stack, Grid, Title, Center, Anchor, Button, Group, Text } from '@mantine/core'
-import { IconPhoneCalling } from '@tabler/icons'
 import Link from 'next/link'
 import React from 'react'
 import { PRIMARY_SHADE } from '../../config/constants'

@@ -11,7 +11,8 @@ class ProfileSerializer(BaseSerializer, serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['id', 'user', 'phone_no', 'checker', 'approver', 'can_update_bank_batch']
+        fields = ['id', 'user', 'phone_no', 'checker', 'approver', 'can_update_bank_batch', 'is_finance_officer',
+                  'can_verify_purchases']
         extra_kwargs = {
             'user': {
                 "required": False

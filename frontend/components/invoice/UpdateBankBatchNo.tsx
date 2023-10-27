@@ -6,7 +6,7 @@ import { makeRequestOne } from '../../config/config'
 import { URLS } from '../../config/constants'
 import { useAppContext } from '../../providers/appProvider'
 import { displayErrors } from '../../config/functions'
-import { Button, Center, Grid, Group, TextInput } from '@mantine/core'
+import { Button, Grid, Group, TextInput } from '@mantine/core'
 
 interface IUpdateBankBatchNo {
     formID: any

@@ -208,6 +208,8 @@ const OverExpenditureForm = ({ projects, checkers, user }: IProps) => {
         initialValues: {
             country: "Kenya",
             currency: "kes",
+            payee: "",
+            date: "",
             invoice_number: "",
             bank_batch_no: "",
             date_of_receipt: "",
@@ -254,6 +256,7 @@ const OverExpenditureForm = ({ projects, checkers, user }: IProps) => {
         data.items = JSON.stringify(_items)
 
         data.date_of_receipt = formatDateToYYYYMMDD(data?.date_of_receipt)
+        data.date = formatDateToYYYYMMDD(data?.date)
 
         let requested_by_date = formatDateToYYYYMMDD(data.requested_by.date)
         data.requested_by.date = requested_by_date

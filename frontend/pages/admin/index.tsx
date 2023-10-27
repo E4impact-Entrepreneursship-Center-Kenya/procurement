@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, {  } from 'react'
 import AdminWrapper from '../../layouts/AdminWrapper'
-import requireAuthMiddleware from '../../middleware/requireAuthMiddleware';
 import requireAdminMiddleware from '../../middleware/requireAdminMiddleware';
 
 interface IAdmin {

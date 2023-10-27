@@ -1,6 +1,5 @@
-import { Button, Grid, TextInput, ActionIcon, Center, Stack, Box, LoadingOverlay, Group } from '@mantine/core'
+import { Button, Grid, TextInput, ActionIcon, Center, Stack, LoadingOverlay, Group } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import { Prism } from '@mantine/prism'
 import { IconTrash } from '@tabler/icons'
 import React, { useState } from 'react'
 import { makeRequestOne } from '../../../config/config'

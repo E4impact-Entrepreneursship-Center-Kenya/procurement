@@ -39,7 +39,7 @@ const Login = (props: any) => {
             method: "POST",
             extra_headers: {},
             data: form.values,
-            params: {fields: 'id,username,full_name,is_superuser,profile,phone_no,checker,approver,can_update_bank_batch' },
+            params: {fields: 'id,username,full_name,is_superuser,profile,phone_no,checker,approver,can_update_bank_batch,is_finance_officer,can_verify_purchases' },
             useNext: true,
         }
         setLoading(true)

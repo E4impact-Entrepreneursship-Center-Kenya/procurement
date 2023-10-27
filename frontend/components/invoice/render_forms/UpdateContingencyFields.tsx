@@ -3,36 +3,25 @@ import { showNotification } from '@mantine/notifications'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { formatDateToYYYYMMDD, makeRequestOne } from '../../../config/config'
-import { URLS } from '../../../config/constants'
 import { useAppContext } from '../../../providers/appProvider'
 import ApprovalPerson, { ApprovalPersonNoInput } from '../Approvals'
 import { Box, Button, Grid, Group, LoadingOverlay } from '@mantine/core'
 
-
-function getMessage(level: any){
-    if(level === 2){
-        return 'The form has been checked by'
-    }
-    if(level === 3){
-        return 'The form has been approved by'
-    }
-    if(level === 4){
-        return 'Form Receipt updated by'
-    }
-}
-
 interface IUpdateContingencyFields {
+    formID?: any,
     data: any
     field: string
-    formID: any
+    max_level?: any
     nextLevel: number
     title: string
     userId: any
     checker: any
     requestedBy: any
+    form_url?: string
+    field_update_url?: string
 }
 
-const UpdateContingencyFields = ({ data, field, formID, nextLevel, title, userId, checker, requestedBy }: IUpdateContingencyFields) => {
+const UpdateContingencyFields = ({ data, field, nextLevel, title, userId, checker, requestedBy, max_level, form_url, field_update_url }: IUpdateContingencyFields) => {
 
     const [loading, setLoading] = useState(false)
     const router = useRouter()
@@ -59,12 +48,8 @@ const UpdateContingencyFields = ({ data, field, formID, nextLevel, title, userId
         formData.append('date', formatDateToYYYYMMDD(data[field].date))
 
         setLoading(true)
-        let url = URLS.FORM_USERS
-        if (nextLevel === 4) {
-            url = URLS.AMOUNT_RECEIVED
-        }
         makeRequestOne({
-            url: `${url}`,
+            url: `${field_update_url}`,
             method: "POST",
             data: formData,
             extra_headers: {
@@ -76,11 +61,11 @@ const UpdateContingencyFields = ({ data, field, formID, nextLevel, title, userId
                 level: nextLevel,
                 [field]: res?.data?.id
             }
-            if (nextLevel === 4) {
+            if (nextLevel === max_level) {
                 updateData.is_complete = true
             }
             makeRequestOne({
-                url: `${URLS.CASH_ADVANCE_FORMS}/${formID}`,
+                url: `${form_url}`,
                 method: 'PUT',
                 extra_headers: {
                     authorization: `Bearer ${token}`,

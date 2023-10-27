@@ -12,6 +12,36 @@ const invoices: IInvoice[] = [
     href: "/account/forms/cash-advance-forms",
     icon: 'https://img.icons8.com/carbon-copy/100/40C057/invoice.png'
   },
+  {
+    title: "Expense Claim",
+    href: "/account/forms/expense-claim-forms",
+    icon: 'https://img.icons8.com/carbon-copy/100/40C057/invoice.png'
+  },
+  {
+    title: "Purchase Requisition",
+    href: "/account/forms/purchase-requisition-forms",
+    icon: 'https://img.icons8.com/carbon-copy/100/40C057/invoice.png'
+  },
+  {
+    title: "Request For Quotation",
+    href: "/account/forms/request-for-quotation-forms",
+    icon: 'https://img.icons8.com/carbon-copy/100/40C057/invoice.png'
+  },
+  {
+    title: "Local Purchase Order",
+    href: "/account/forms/local-purchase-order-forms",
+    icon: 'https://img.icons8.com/carbon-copy/100/40C057/invoice.png'
+  },
+  {
+    title: "Over Expenditure Form",
+    href: "/account/forms/over-expenditure-forms",
+    icon: 'https://img.icons8.com/carbon-copy/100/40C057/invoice.png'
+  },
+  {
+    title: "Under Expenditure Form",
+    href: "/account/forms/under-expenditure-forms",
+    icon: 'https://img.icons8.com/carbon-copy/100/40C057/invoice.png'
+  },
 ]
 
 interface IMyForms {

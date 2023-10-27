@@ -3,7 +3,6 @@ import {
     AppShell,
     Navbar,
     Header,
-    Aside,
     Text,
     MediaQuery,
     Burger,
@@ -13,19 +12,14 @@ import {
     ScrollArea,
     Stack,
     NavLink,
-    TextInput,
-    Grid,
-    Center,
-    ActionIcon,
 } from '@mantine/core';
 import publicStyles from '../styles/publicStyles';
 import { useMediaQuery } from '@mantine/hooks';
 import AccountBtn from '../components/common/AccountBtn';
 import { ColorSchemeToggle } from '../components/ColorSchemeToggle/ColorSchemeToggle';
-import { getTheme } from '../config/config';
 import { BLUE_DARK_COLOR, BLUE_BG_COLOR, WEBSITE_LOGO } from '../config/constants';
 import SidebarLink, { SidebarLinkGroupProps } from '../components/navigations/SidebarLink';
-import { IconArticle, IconCategory, IconCategory2, IconDashboard, IconHash, IconHome2, IconLogout, IconMessage, IconPhoto, IconPlus, IconQuote, IconSettings, IconTag, IconTags, IconUserCheck, IconUserPlus, IconUsers } from '@tabler/icons';
+import { IconDashboard, IconHome2, IconLogout, IconSettings, IconUsers } from '@tabler/icons';
 import { useAppContext } from '../providers/appProvider';
 import CustomNotifications from '../components/common/CustomNotifications';
 

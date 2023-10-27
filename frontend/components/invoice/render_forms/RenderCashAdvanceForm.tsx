@@ -136,7 +136,7 @@ const RenderCashAdvanceForm = forwardRef(({ form, userId }: IRenderCashAdvanceFo
 
                 <ApprovalsSection>
                     <ApprovalPersonNoInput title="Requested By" person={form?.requested_by} />
-                    <UpdateContingencyFields title="Checked By" nextLevel={2} field={'checked_by'} data={form?.checked_by} formID={form?.id} userId={userId} checker={form?.checker} requestedBy={form?.requested_by?.id} />
+                    <UpdateContingencyFields title="Checked By" nextLevel={2} field={'checked_by'} data={form?.checked_by} formID={form?.id} userId={userId} checker={form?.checker} requestedBy={form?.requested_by?.id} max_level={undefined} form_url={''} field_update_url={''} />
 
                     <UpdateContingencyFields title="Approved By" nextLevel={3} field={'approved_by'} data={form?.approved_by} formID={form?.id} userId={userId} checker={form?.approver} requestedBy={form?.requested_by?.id} />
 

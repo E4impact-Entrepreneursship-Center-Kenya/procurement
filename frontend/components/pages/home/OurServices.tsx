@@ -3,7 +3,6 @@ import { IconServerBolt } from '@tabler/icons'
 import React from 'react'
 import publicStyles from '../../../styles/publicStyles'
 import { getTheme, limitChars } from '../../../config/config';
-import { BLUE_BG_COLOR, PRIMARY_SHADE } from '../../../config/constants';
 
 export interface ServiceProps {
     title: string

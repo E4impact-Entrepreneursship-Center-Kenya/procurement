@@ -1,6 +1,5 @@
 import { Grid, TextInput, Select, Stack, Text, List } from '@mantine/core'
 import React from 'react'
-import { DateInput } from '@mantine/dates'
 import { COUNTRIES, CURRENCIES } from '../../../config/constants'
 
 
@@ -11,6 +10,27 @@ const requirements: string[] = [
     "The Quotation should indicate LEAD TIME(duration) for delivery of the items",
     "Indicate all TERMS AND CONDITIONS of the purchase in the space provided."
 ]
+
+export const RequestForQuoatationExtraInfo = () => {
+
+    return (
+        <>
+            <Text size={'xs'} mb={0}>
+                You are invited to submit your quotation for the items listed below.
+                As you fill in the details, please take note of the following:
+            </Text>
+            <List type='ordered' mt={0}>
+                {
+                    requirements?.map((req: string, i: number) => (
+                        <List.Item key={`req_${i}`} >
+                            <Text size={'xs'}>{req}</Text>
+                        </List.Item>
+                    ))
+                }
+            </List>
+        </>
+    )
+}
 
 
 interface IProps {
@@ -49,23 +69,10 @@ const RequestForQuotationFields = ({ form, projects }: IProps) => {
                     <TextInput {...form.getInputProps('address')} label="Address" placeholder='Address' />
                 </Grid.Col>
                 <Grid.Col md={4}>
-                    <TextInput {...form.getInputProps('phone_no')} label="Phone No" placeholder='Phone No' />
+                    <TextInput {...form.getInputProps('phone_number')} label="Phone No" placeholder='Phone No' />
                 </Grid.Col>
             </Grid>
-            <Text>
-                You are invited to submit your quotation for the items listed below.
-                As you fill in the details, please take note of the following:
-            </Text>
-            <List type='ordered'>
-                {
-                    requirements?.map((req: string, i: number) => (
-                        <List.Item key={`req_${i}`} >
-                            <Text size={'sm'}>{req}</Text>
-                        </List.Item>
-                    ))
-                }
-            </List>
-
+            <RequestForQuoatationExtraInfo />
         </Stack>
     )
 }

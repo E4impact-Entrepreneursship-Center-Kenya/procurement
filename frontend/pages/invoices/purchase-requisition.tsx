@@ -138,8 +138,8 @@ const PurchaseRequisitionForm = ({ projects, checkers, user }: IProps) => {
     const form = useForm({
         initialValues: {
             level: 1,
-            country: "",
-            currency: "",
+            country: "Kenya",
+            currency: "kes",
             invoice_number: "",
             requisition_date: "",
             date_required: "",

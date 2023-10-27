@@ -1,6 +1,8 @@
 import { Grid, Select, TextInput, Textarea } from '@mantine/core'
 import React from 'react'
 import { COUNTRIES, CURRENCIES } from '../../../config/constants'
+import { formatCurrency } from '../../../config/config'
+import FormValue from './FormValue'
 
 interface IProps {
     form: any
@@ -56,6 +58,31 @@ const ExpenseClaimFields = ({ form, projects, budgetLines, resetBudgetLines }: I
                 </Grid.Col>
             </Grid>
         </div>
+    )
+}
+
+
+
+export const ExpenseClaimFieldsNoInputs = ({ form }: { form: any }) => {
+
+    return (
+        <Grid>
+            <Grid.Col md={3} mb={0} p={0}>
+                <FormValue title="Name" value={form?.name} />
+            </Grid.Col>
+            <Grid.Col md={3} mb={0} p={0}>
+                <FormValue title="Project" value={form?.project?.name} />
+            </Grid.Col>
+            <Grid.Col md={3} mb={0} p={0}>
+                <FormValue title="Budget Line" value={`${form?.budget_line?.code} ${form?.budget_line?.text}`} />
+            </Grid.Col>
+            <Grid.Col md={3} mb={0} p={0}>
+                <FormValue title="Cash Advance Received" value={`${form?.currency} ${formatCurrency(form?.cash_advance_received)}`} />
+            </Grid.Col>
+            <Grid.Col md={12} mb={0} p={0}>
+                <FormValue title="Purpose" value={form?.purpose} />
+            </Grid.Col>
+        </Grid>
     )
 }
 

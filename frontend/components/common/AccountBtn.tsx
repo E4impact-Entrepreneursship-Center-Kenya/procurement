@@ -1,5 +1,5 @@
-import { Menu, Button, Text, Avatar } from '@mantine/core';
-import { IconSettings, IconSearch, IconPhoto, IconMessageCircle, IconTrash, IconArrowsLeftRight, IconLogout, IconQuote, IconMessage, IconLogin, IconUserPlus, IconArticle, IconDashboard } from '@tabler/icons';
+import { Menu, Avatar } from '@mantine/core';
+import { IconSettings, IconLogout, IconQuote, IconLogin, IconUserPlus, IconDashboard } from '@tabler/icons';
 import { useEffect, useState } from 'react';
 import { useAppContext } from '../../providers/appProvider';
 import Link from 'next/link';

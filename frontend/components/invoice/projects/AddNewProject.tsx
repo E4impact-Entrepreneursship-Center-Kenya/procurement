@@ -5,7 +5,7 @@ import { makeRequestOne } from '../../../config/config'
 import { showNotification } from '@mantine/notifications'
 import { URLS } from '../../../config/constants'
 import { displayErrors } from '../../../config/functions'
-import { Button, Card, Center, Grid, Group, TextInput } from '@mantine/core'
+import { Button, Card, Grid, Group, TextInput } from '@mantine/core'
 import { useRouter } from 'next/router'
 
 const AddNewProject = () => {

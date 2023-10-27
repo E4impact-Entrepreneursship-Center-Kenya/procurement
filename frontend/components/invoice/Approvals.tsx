@@ -1,8 +1,7 @@
-import { Anchor, Button, FileInput, Grid, Group, Image, Overlay, Paper, Stack, Text, TextInput, Title } from '@mantine/core'
+import { Anchor, Button, FileInput, Grid, Group, Image, Overlay, Text, TextInput, Title } from '@mantine/core'
 import React from 'react'
 import { DateInput } from "@mantine/dates"
-import { formatCurrency, getTheme, toDate } from '../../config/config'
-import { INVOICE_LEVELS } from '../../config/constants'
+import { formatCurrency, toDate } from '../../config/config'
 
 interface IApprovalPerson {
     person: string
@@ -16,9 +15,9 @@ interface IApprovalPerson {
 const ApprovalPerson = ({ person, form, field_prefix, field_name, active, level }: IApprovalPerson) => {
 
     return (
-        <Grid style={{ position: 'relative' }} py="sm">
+        <Grid style={{ position: 'relative' }} py="sm"> 
             <Overlay hidden={active} />
-            <Grid.Col md={5}>
+            <Grid.Col  md={5}>
                 <TextInput label={person}
                     {...form.getInputProps(`${field_prefix}.${field_name}`)}
                     placeholder={field_name === 'amount' ? 'Enter Amount' : 'Enter Your Name'} />
@@ -62,7 +61,7 @@ export const ApprovalPersonNoInput = ({ title, person, level }: { person: any, t
 
     return (
         <Grid style={{ position: 'relative' }} p={0}>
-            <Grid.Col md={5}>
+            <Grid.Col span={4} md={5}>
                 <Title order={4} weight={500} size={14}>{title}</Title>
                 <Text size={'xs'}>
                     {
@@ -70,7 +69,7 @@ export const ApprovalPersonNoInput = ({ title, person, level }: { person: any, t
                     }
                 </Text>
             </Grid.Col>
-            <Grid.Col md={4}>
+            <Grid.Col span={4} md={4}>
                 <Group align='center'>
                     <Title order={4} weight={500} mb={'mb'} size={14}>
                         {level === 4 ? `Receipt` : 'Signature'}
@@ -80,28 +79,13 @@ export const ApprovalPersonNoInput = ({ title, person, level }: { person: any, t
                             <Anchor target='_blank' href={person.receipt} size={'sm'}>
                                 <Button size='sm' radius={'md'}>View</Button>
                             </Anchor>
-                            {/* {
-                                isPDF(person?.receipt) ? (
-                                    <Anchor target='_blank' href={person.receipt}>
-                                        <Button size='sm' radius={'md'}>Download</Button>
-                                    </Anchor>
-                                ) : (
-                                    <>
-                                        <Image src={person?.receipt} maw={'100%'} alt={level === 4 ? `Receipt` : 'Signature'} />
-
-                                        <Anchor target='_blank' href={person.receipt}>
-                                            <Button size='sm' radius={'md'}>Download</Button>
-                                        </Anchor>
-                                    </>
-                                )
-                            } */}
                         </>
                     ) : (
                         <Image src={person?.signature} width={60} alt={level === 4 ? `Receipt` : 'Signature'} />
                     )}
                 </Group>
             </Grid.Col>
-            <Grid.Col md={3}>
+            <Grid.Col span={4} md={3}>
                 <Group>
                     <Title order={4} weight={500} size={14}>Date</Title>
                     <Text size={"xs"}>{toDate(person?.date)}</Text>

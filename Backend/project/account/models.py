@@ -8,6 +8,9 @@ class Profile(models.Model):
     checker = models.BooleanField(default=False)
     approver = models.BooleanField(default=False)
     can_update_bank_batch = models.BooleanField(default=False)
+    is_finance_officer = models.BooleanField(default=False)
+    can_verify_purchases = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username
+

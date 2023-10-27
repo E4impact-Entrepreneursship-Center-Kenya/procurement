@@ -54,7 +54,7 @@ const LocalPurchaseOrderDatatable = ({ form }: { form: any }) => {
                 minHeight={150}
                 records={form.values.items}
                 columns={[
-                    {
+                    { 
                         accessor: 'no',
                         title: "No.",
                         width: "60px",
@@ -187,15 +187,21 @@ const LocalPurchaseOrder = ({ projects, checkers, user }: IProps) => {
             },
             delivery_costs: "",
             return_to_name: "",
-            return_to_email: ""
+            return_to_email: "",
+            delivery_period: "",
+            price_validity_period: "",
+            warrant_period: "",
+        },
+        validate: {
+            delivery_costs: value => value === "" ? "Enter cost here" : null
         }
     })
 
     function getAmountTotal(items?: any) {
         if (items) {
-            return items?.reduce((old: number, item: any, i: number) => (item?.amount !== "" || item?.amount !== null) ? old + item?.amount : old, 0)
+            return items?.reduce((old: number, item: any, i: number) => (item?.amount !== "" || item?.amount !== null) ? old + item?.amount : old, 0) + (form.values.delivery_costs ?? 0)
         }
-        return form.values?.items?.reduce((old: number, item: any, i: number) => (item?.amount !== "" || item?.amount !== null) ? old + item?.amount : old, 0)
+        return form.values?.items?.reduce((old: number, item: any, i: number) => (item?.amount !== "" || item?.amount !== null) ? old + item?.amount : old, 0) + (form.values.delivery_costs ?? 0)
     }
 
     function submitForm() {
@@ -224,7 +230,7 @@ const LocalPurchaseOrder = ({ projects, checkers, user }: IProps) => {
 
         const formData = convertJSONToFormData(data)
         makeRequestOne({
-            url: URLS.PURCHASE_REQUISITION_FORMS,
+            url: URLS.LOCAL_PURCHASE_ORDER_FORMS,
             method: "POST",
             data: formData,
             extra_headers: {
@@ -279,7 +285,7 @@ const LocalPurchaseOrder = ({ projects, checkers, user }: IProps) => {
                             <Grid>
                                 <Grid.Col md={9}></Grid.Col>
                                 <Grid.Col md={3}>
-                                    <TextInput label="Delivery/Transport Costs" {...form.getInputProps('delivery_costs')} />
+                                    <NumberInput label="Delivery/Transport Costs" {...form.getInputProps('delivery_costs')} hideControls />
                                 </Grid.Col>
                             </Grid>
                             <Group position="right">
@@ -298,10 +304,10 @@ const LocalPurchaseOrder = ({ projects, checkers, user }: IProps) => {
                                     Please return a signed copy of this purchase order to:
                                 </Text>
                                 <Grid>
-                                    <Grid.Col md={4}>
+                                    <Grid.Col md={6}>
                                         <TextInput label="Name" placeholder='Name' {...form.getInputProps('return_to_name')} />
                                     </Grid.Col>
-                                    <Grid.Col md={4}>
+                                    <Grid.Col md={6}>
                                         <TextInput label="Email" placeholder='Email' {...form.getInputProps('return_to_email')} />
                                     </Grid.Col>
                                 </Grid>

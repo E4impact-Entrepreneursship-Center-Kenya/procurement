@@ -1,9 +1,9 @@
 
-export const DEFAULT_API_ROOT = 'http://localhost:8000'
-export const DEFAULT_APP_URL = "http://localhost:3000"
+// export const DEFAULT_API_ROOT = 'http://localhost:8000'
+// export const DEFAULT_APP_URL = "http://localhost:3000"
 
-// export const DEFAULT_API_ROOT = 'https://api.procurement.e4impactkenya.org'
-// export const DEFAULT_APP_URL = "https://procurement.e4impactkenya.org"
+export const DEFAULT_API_ROOT = 'https://api.procurement.e4impactkenya.org'
+export const DEFAULT_APP_URL = "https://procurement.e4impactkenya.org"
 
 export const APP_NAME = "E4IMPACT"
 export const SEPARATOR = "|"

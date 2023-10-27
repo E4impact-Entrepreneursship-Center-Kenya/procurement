@@ -1,19 +1,20 @@
-import { Grid, Group, Image, Stack, Text } from '@mantine/core'
+import { Grid, Group, Stack, Text } from '@mantine/core'
 import React from 'react'
-import { WEBSITE_LOGO } from '../../config/constants'
 import InvoiceTitle from './InvoiceTitle'
 
 interface IProps {
     form?: any
+    invoice_number?: any
+    batch_number?: any
     title?: any
 }
 
 const InvoiceHeader = (props: IProps) => {
-    const { form, title } = props
+    const { form, title, batch_number } = props
     return (
         <Grid>
             <Grid.Col span={9}>
-                <InvoiceTitle title={title} invoice_number={form?.invoice_number} batch_number={form?.bank_batch_no} />
+                <InvoiceTitle title={title} invoice_number={form?.invoice_number} batch_number={batch_number} />
             </Grid.Col>
             <Grid.Col span={3}>
                 <Group position='right'>

@@ -1,4 +1,4 @@
-import { HoverCard, Button, Text, Group, ActionIcon } from '@mantine/core';
+import { HoverCard, Text, Group, ActionIcon } from '@mantine/core';
 import { IconExclamationMark } from '@tabler/icons';
 
 interface ICustomHoverCard {

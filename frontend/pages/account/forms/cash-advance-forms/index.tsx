@@ -4,7 +4,6 @@ import requireAuthMiddleware from '../../../../middleware/requireAuthMiddleware'
 import { formatCurrency, makeRequestOne, toDate } from '../../../../config/config'
 import { LOCAL_STORAGE_KEYS, URLS } from '../../../../config/constants'
 import { Anchor, Box, Button, ColorSwatch, Container, Group, RingProgress, Stack, Text, Title } from '@mantine/core'
-import RenderCashAdvanceForm from '../../../../components/invoice/render_forms/RenderCashAdvanceForm'
 import { DataTable } from 'mantine-datatable'
 import Link from 'next/link'
 import { IconArrowLeft } from '@tabler/icons'
@@ -111,14 +110,14 @@ const CashAdvanceFormTable = ({ records }: { records: any }) => {
 }
 
 interface IMyForms {
-  my_cash_advance_forms: any
-  cash_advance_forms_to_check: any
-  cash_advance_forms_to_approve: any
+  my_forms: any
+  forms_to_check: any
+  forms_to_approve: any
   userId: any
 }
 
 const MyForms = (props: IMyForms) => {
-  const { my_cash_advance_forms, cash_advance_forms_to_check, userId, cash_advance_forms_to_approve } = props
+  const { my_forms, forms_to_check, userId, forms_to_approve } = props
 
   const [user_, setUser] = useState()
   const { user } = useAppContext()
@@ -140,14 +139,14 @@ const MyForms = (props: IMyForms) => {
         </Box>
         <Stack>
           <Title>My Cash Advance Forms</Title>
-          <CashAdvanceFormTable records={my_cash_advance_forms} />
+          <CashAdvanceFormTable records={my_forms} />
         </Stack>
 
         {
           user ? user?.profile?.checker ? (
             <Stack>
               <Title>Cash Advance Forms to Check</Title>
-              <CashAdvanceFormTable records={cash_advance_forms_to_check} />
+              <CashAdvanceFormTable records={forms_to_check} />
             </Stack>
           ) : null : null
         }
@@ -156,7 +155,7 @@ const MyForms = (props: IMyForms) => {
           user ? user?.profile?.approver ? (
             <Stack>
               <Title>Cash Advance Forms to Approve</Title>
-              <CashAdvanceFormTable records={cash_advance_forms_to_approve} />
+              <CashAdvanceFormTable records={forms_to_approve} />
             </Stack>
           ) : null : null
         }
@@ -176,7 +175,7 @@ export const getServerSideProps = async (context: any) => {
   const token = cookies[LOCAL_STORAGE_KEYS.token]
   const user_id = cookies[LOCAL_STORAGE_KEYS.user_id]
 
-  const cash_advance_forms_query_to_check = await makeRequestOne({
+  const forms_to_check_query = await makeRequestOne({
     url: URLS.CASH_ADVANCE_FORMS,
     method: "GET",
     extra_headers: {
@@ -189,7 +188,7 @@ export const getServerSideProps = async (context: any) => {
     }
   })
 
-  const cash_advance_forms_query_to_approve = await makeRequestOne({
+  const forms_to_approve_query = await makeRequestOne({
     url: URLS.CASH_ADVANCE_FORMS,
     method: "GET",
     extra_headers: {
@@ -202,7 +201,7 @@ export const getServerSideProps = async (context: any) => {
     }
   })
 
-  const my_cash_advance_forms_query = await makeRequestOne({
+  const my_forms_query = await makeRequestOne({
     url: URLS.CASH_ADVANCE_FORMS,
     method: "GET",
     extra_headers: {
@@ -216,7 +215,7 @@ export const getServerSideProps = async (context: any) => {
   })
 
 
-  return Promise.allSettled([my_cash_advance_forms_query, cash_advance_forms_query_to_check, cash_advance_forms_query_to_approve]).then((res) => {
+  return Promise.allSettled([my_forms_query, forms_to_check_query, forms_to_approve_query]).then((res) => {
     const res_0: any = res[0]
     const res_1: any = res[1]
     const res_2: any = res[2]
@@ -226,9 +225,9 @@ export const getServerSideProps = async (context: any) => {
     }
     return {
       props: {
-        my_cash_advance_forms: res_0?.value?.data.results,
-        cash_advance_forms_to_check: res_1?.value?.data.results,
-        cash_advance_forms_to_approve: res_2?.value?.data?.results,
+        my_forms: res_0?.value?.data.results,
+        forms_to_check: res_1?.value?.data.results,
+        forms_to_approve: res_2?.value?.data?.results,
         userId: parseInt(user_id || '0')
       }
     }
