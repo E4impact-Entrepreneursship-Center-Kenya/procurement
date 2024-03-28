@@ -84,6 +84,11 @@ const invoices: IInvoice[] = [
     icon: 'https://img.icons8.com/wired/64/40C057/estimate.png'
   },
   {
+    title: "Work Completion Certificate",
+    href: "/invoices/work-completion-certicate",
+    icon: 'https://img.icons8.com/wired/64/40C057/estimate.png',
+  },
+  {
     title: "Under Expenditure Form",
     href: "/invoices/under-expenditure-form",
     icon: 'https://img.icons8.com/external-smashingstocks-detailed-outline-smashing-stocks/66/40C057/external-accounting-accounting-smashingstocks-detailed-outline-smashing-stocks-3.png'
